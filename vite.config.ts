@@ -12,7 +12,6 @@ export default defineConfig({
       fileName: 'index',
     },
     cssCodeSplit: true,
-    sourcemap: true,
     emptyOutDir: false,
     rollupOptions: {
       external: ['react'],
