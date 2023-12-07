@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import framesWorker from "./worker.js?worker&inline";
 import * as THREE from "three";
 
@@ -80,49 +80,49 @@ export const useAnimationTexture = ({
   const [animationTexture, setAnimationTexture] =
     useState<THREE.CanvasTexture | null>(null);
   const currentFrame = useRef(0);
+  const frameUpdate = useCallback(() => {
+    const currentFrames = getFrameses(url);
+
+    if (
+      !enabledLoop &&
+      currentFrames &&
+      currentFrame.current + 1 === currentFrames.images.length
+    ) {
+      return;
+    }
+
+    if (currentFrames?.images.length === 1 && framesMap.size == 1) {
+      return;
+    }
+
+    if (currentFrames && currentFrames.images.length > 0) {
+      currentFrame.current =
+        (currentFrame.current + 1) % currentFrames.images.length;
+      const image = currentFrames.images[currentFrame.current];
+      if (!animationTexture) {
+        currentFrames.ctx.putImageData(image, 0, 0);
+        const texture = new THREE.CanvasTexture(currentFrames.canvas);
+        texture.premultiplyAlpha = true;
+        texture.minFilter = THREE.LinearFilter;
+        setAnimationTexture(texture);
+      } else {
+        currentFrames.ctx.putImageData(image, 0, 0);
+        animationTexture.needsUpdate = true;
+      }
+    }
+  }, [animationTexture, enabledLoop, url]);
 
   useEffect(() => {
     initializeWorker();
     load(url);
 
     const intervalForClear =
-      enabledInterval &&
-      setInterval(() => {
-        const currentFrames = getFrameses(url);
-
-        if (
-          !enabledLoop &&
-          currentFrames &&
-          currentFrame.current + 1 === currentFrames.images.length
-        ) {
-          return;
-        }
-
-        if (currentFrames?.images.length === 1 && framesMap.size == 1) {
-          return;
-        }
-
-        if (currentFrames && currentFrames.images.length > 0) {
-          currentFrame.current =
-            (currentFrame.current + 1) % currentFrames.images.length;
-          const image = currentFrames.images[currentFrame.current];
-          if (!animationTexture) {
-            currentFrames.ctx.putImageData(image, 0, 0);
-            const texture = new THREE.CanvasTexture(currentFrames.canvas);
-            texture.premultiplyAlpha = true;
-            texture.minFilter = THREE.LinearFilter;
-            setAnimationTexture(texture);
-          } else {
-            currentFrames.ctx.putImageData(image, 0, 0);
-            animationTexture.needsUpdate = true;
-          }
-        }
-      }, interval);
+      enabledInterval && setInterval(frameUpdate, interval);
 
     return () => {
       intervalForClear && clearInterval(intervalForClear);
     };
-  }, [animationTexture, enabledInterval, enabledLoop, interval, url]);
+  }, [enabledInterval, frameUpdate, interval, url]);
 
   useEffect(() => {
     return () => {
