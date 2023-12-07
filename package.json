@@ -2,21 +2,21 @@
   "name": "animation-texture",
   "version": "0.1.11",
   "type": "module",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types/useAnimationTexture.d.ts",
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/types/useAnimationTexture.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.umd.cjs"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean"
+    "build": "vite build && tsc"
   },
   "dependencies": {
     "gifuct-js": "^2.1.2",
@@ -35,7 +35,6 @@
     "eslint": "^8.53.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
-    "tsup": "^8.0.1",
     "typescript": "^5.2.2",
     "vite": "^5.0.6"
   },
