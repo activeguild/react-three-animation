@@ -15,6 +15,10 @@ Support is also planned for `GIF` files, etc.
 npm i -D animation-texture
 ```
 
+## Demo
+
+<img src="https://github.com/activeguild/animation-texture/assets/39351982/00acf5d7-2077-4618-aef3-8a0be4b609d2" height="160" />
+
 ## Usage
 
 ```ts
