@@ -99,20 +99,22 @@ export const useAnimationTexture = ({
       const tmpCurrentFrame = currentFrame + 1;
       const nextCurrentFrame = tmpCurrentFrame % currentFrames.images.length;
       const image = currentFrames.images[nextCurrentFrame];
-      if (!animationTexture) {
-        currentFrames.ctx.putImageData(image, 0, 0);
-        const texture = new CanvasTexture(currentFrames.canvas);
-        texture.premultiplyAlpha = true;
-        texture.minFilter = LinearFilter;
-        setAnimationTexture(texture);
-      } else {
-        currentFrames.ctx.putImageData(image, 0, 0);
-        animationTexture.needsUpdate = true;
-      }
+      // if (!animationTexture) {
+      currentFrames.ctx.putImageData(image, 0, 0);
+      const texture = new CanvasTexture(currentFrames.canvas);
+      texture.premultiplyAlpha = true;
+      texture.minFilter = LinearFilter;
+      setAnimationTexture(texture);
+
+      // [Note]: I'm doing needaUpdate, but the textures are not updated in the middle of the process.
+      // } else {
+      //   currentFrames.ctx.putImageData(image, 0, 0);
+      //   animationTexture.needsUpdate = true;
+      // }
 
       setCurrentFrame(nextCurrentFrame);
     }
-  }, [animationTexture, currentFrame, enabledLoop, url]);
+  }, [currentFrame, enabledLoop, url]);
 
   useEffect(() => {
     initializeWorker();
