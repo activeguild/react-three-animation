@@ -120,10 +120,15 @@ export const useAnimationTexture = ({
       }, interval);
 
     return () => {
-      worker?.terminate();
       intervalForClear && clearInterval(intervalForClear);
     };
   }, [animationTexture, enabledInterval, enabledLoop, interval, url]);
+
+  useEffect(() => {
+    return () => {
+      worker?.terminate();
+    };
+  }, []);
 
   const getFrameses = (url: UseAnimationTextureArgs["url"]) => {
     return framesMap.get(url);
