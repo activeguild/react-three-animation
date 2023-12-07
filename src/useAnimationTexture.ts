@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import framesWorker from "./worker.js?worker&inline";
 import * as THREE from "three";
 
@@ -79,14 +79,14 @@ export const useAnimationTexture = ({
 }: UseAnimationTextureArgs) => {
   const [animationTexture, setAnimationTexture] =
     useState<THREE.CanvasTexture | null>(null);
-  const currentFrame = useRef(0);
+  const [currentFrame, setCurrentFrame] = useState(0);
   const frameUpdate = useCallback(() => {
     const currentFrames = getFrameses(url);
 
     if (
       !enabledLoop &&
       currentFrames &&
-      currentFrame.current + 1 === currentFrames.images.length
+      currentFrame + 1 === currentFrames.images.length
     ) {
       return;
     }
@@ -96,9 +96,9 @@ export const useAnimationTexture = ({
     }
 
     if (currentFrames && currentFrames.images.length > 0) {
-      currentFrame.current =
-        (currentFrame.current + 1) % currentFrames.images.length;
-      const image = currentFrames.images[currentFrame.current];
+      const tmpCurrentFrame = currentFrame + 1;
+      const nextCurrentFrame = tmpCurrentFrame % currentFrames.images.length;
+      const image = currentFrames.images[nextCurrentFrame];
       if (!animationTexture) {
         currentFrames.ctx.putImageData(image, 0, 0);
         const texture = new THREE.CanvasTexture(currentFrames.canvas);
@@ -109,8 +109,10 @@ export const useAnimationTexture = ({
         currentFrames.ctx.putImageData(image, 0, 0);
         animationTexture.needsUpdate = true;
       }
+
+      setCurrentFrame(nextCurrentFrame);
     }
-  }, [animationTexture, enabledLoop, url]);
+  }, [animationTexture, currentFrame, enabledLoop, url]);
 
   useEffect(() => {
     initializeWorker();
