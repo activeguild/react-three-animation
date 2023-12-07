@@ -1,7 +1,7 @@
-<h1 align="center">AnimationTexture ⚡ Welcome 😀</h1>
+<h1 align="center">animation-texture ⚡ Welcome 😀</h1>
 
 <p align="left">
-  <a href="https://github.com/actions/setup-node"><img alt="GitHub Actions status" src="https://github.com/activeguild/AnimationTexture/workflows/automatic%20release/badge.svg" style="max-width:100%;"></a>
+  <a href="https://github.com/actions/setup-node"><img alt="GitHub Actions status" src="https://github.com/activeguild/animation-texture/workflows/automatic%20release/badge.svg" style="max-width:100%;"></a>
 </p>
 
 # AnimationTexture
@@ -21,7 +21,7 @@ npm i -D AnimationTexture
 import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useAnimationTexture } from "./useAnimationTexture";
+import { useAnimationTexture } from "animation-texture";
 
 interface Props {
   url: string;
@@ -59,7 +59,7 @@ export function Model({ url }: Props) {
 ```ts
 import React from "react";
 import * as THREE from "three";
-import { preLoad } from "./useAnimationTexture";
+import { preLoad } from "animation-texture";
 
 export default function App() {
   preLoad('/sample.png');
@@ -70,8 +70,8 @@ export default function App() {
 
 ## Principles of conduct
 
-Please see [the principles of conduct](https://github.com/activeguild/AnimationTexture/blob/main/.github/CONTRIBUTING.md) when building a site.
+Please see [the principles of conduct](https://github.com/activeguild/animation-texture/blob/main/.github/CONTRIBUTING.md) when building a site.
 
 ## License
 
-This library is licensed under the [MIT license](https://github.com/activeguild/AnimationTexture/blob/main/LICENSE).
+This library is licensed under the [MIT license](https://github.com/activeguild/animation-texture/blob/main/LICENSE).
