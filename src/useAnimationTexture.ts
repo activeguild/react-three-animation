@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import framesWorker from "./worker.js?worker&inline";
-import * as THREE from "three";
+import { CanvasTexture, LinearFilter } from "three";
 
 interface UseAnimationTextureArgs {
   url: string;
@@ -101,9 +101,9 @@ export const useAnimationTexture = ({
       const image = currentFrames.images[nextCurrentFrame];
       if (!animationTexture) {
         currentFrames.ctx.putImageData(image, 0, 0);
-        const texture = new THREE.CanvasTexture(currentFrames.canvas);
+        const texture = new CanvasTexture(currentFrames.canvas);
         texture.premultiplyAlpha = true;
-        texture.minFilter = THREE.LinearFilter;
+        texture.minFilter = LinearFilter;
         setAnimationTexture(texture);
       } else {
         currentFrames.ctx.putImageData(image, 0, 0);

@@ -14,9 +14,6 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
-  three:
-    specifier: ^0.159.0
-    version: 0.159.0
 
 devDependencies:
   '@types/node':
@@ -49,6 +46,9 @@ devDependencies:
   eslint-plugin-react-refresh:
     specifier: ^0.4.4
     version: 0.4.5(eslint@8.55.0)
+  three:
+    specifier: ^0.159.0
+    version: 0.159.0
   typescript:
     specifier: ^5.2.2
     version: 5.3.3
@@ -1534,7 +1534,7 @@ packages:
 
   /three@0.159.0:
     resolution: {integrity: sha512-eCmhlLGbBgucuo4VEA9IO3Qpc7dh8Bd4VKzr7WfW4+8hMcIfoAVi1ev0pJYN9PTTsCslbcKgBwr2wNZ1EvLInA==}
-    dev: false
+    dev: true
 
   /to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}

@@ -14,7 +14,7 @@ export default defineConfig({
     cssCodeSplit: true,
     emptyOutDir: false,
     rollupOptions: {
-      external: ['react'],
+      external: ['react', 'three'],
       output: {
         globals: {
           react: 'React',
