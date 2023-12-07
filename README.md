@@ -32,14 +32,7 @@ interface Props {
 
 export function Model({ url }: Props) {
   const { animationTexture } = useAnimationTexture({ url });
-  const meshRef =
-    useRef<
-      THREE.Mesh<
-        THREE.BufferGeometry<THREE.NormalBufferAttributes>,
-        THREE.MeshPhongMaterial,
-        THREE.Object3DEventMap
-      >
-    >();
+  const meshRef = useRef();
 
   useEffect(() => {
     if (meshRef.current && animationTexture) {
