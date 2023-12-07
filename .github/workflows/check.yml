@@ -16,9 +16,7 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7.29.0
-      - uses: sarthak-saxena/JSBundleSize@master
-        with:
-          bootstrap: 'pnpm i'
-          build_command: 'pnpm run build'
-          dist_path: 'dist'
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: install
+        run: pnpm i
+      - name: build
+        run: pnpm run build
