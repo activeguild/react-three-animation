@@ -1,6 +1,6 @@
 {
   "name": "animation-texture",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "type": "module",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
