@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import framesWorker from "./worker.js?worker";
+import framesWorker from "./worker.js?worker&inline";
 import * as THREE from "three";
 
 interface UseAnimationTextureArgs {
