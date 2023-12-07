@@ -22,8 +22,7 @@ npm i -D animation-texture
 ## Usage
 
 ```ts
-import React, { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { useAnimationTexture } from "animation-texture";
 
@@ -32,7 +31,7 @@ interface Props {
 }
 
 export function Model({ url }: Props) {
-  const { currentCanvasTexture } = useAnimationTexture({ url });
+  const { animationTexture } = useAnimationTexture({ url });
   const meshRef =
     useRef<
       THREE.Mesh<
@@ -42,12 +41,12 @@ export function Model({ url }: Props) {
       >
     >();
 
-  useFrame(() => {
-    if (meshRef.current && currentCanvasTexture) {
-      meshRef.current.material.map = currentCanvasTexture;
+  useEffect(() => {
+    if (meshRef.current && animationTexture) {
+      meshRef.current.material.map = animationTexture;
       meshRef.current.material.needsUpdate = true;
     }
-  });
+  }, [animationTexture]);
 
   return (
     <mesh ref={meshRef} position={new THREE.Vector3(0, 0, 0)}>

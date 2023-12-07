@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import framesWorker from "./worker.js?worker&inline";
+import framesWorker from "./worker.js?worker";
 import * as THREE from "three";
 
 interface UseAnimationTextureArgs {
@@ -13,7 +13,14 @@ const DEFAULT_ENABLED_INTERVAL = true;
 const DEFAULT_INTERVAL = 100;
 const DEFAULT_ENABLED_LOOP = true;
 
-const framesMap = new Map<string, THREE.CanvasTexture[]>();
+const framesMap = new Map<
+  string,
+  {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    images: ImageData[];
+  }
+>();
 let worker: Worker;
 
 const load = (url: UseAnimationTextureArgs["url"]) => {
@@ -39,30 +46,27 @@ const initializeWorker = () => {
     worker = new framesWorker();
     worker.onmessage = (event) => {
       const { url, img, frames } = event.data;
-      const canvases = frames.map((frame) => {
-        const canvas = document.createElement("canvas");
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        return null;
+      }
+      const images = frames.map((frame) => {
         const isGif = url.endsWith(".gif");
         const width = isGif ? frame.dims.width : img.width;
         const height = isGif ? frame.dims.height : img.height;
 
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext("2d");
         const imageData = new ImageData(
           isGif ? frame.patch : new Uint8ClampedArray(frame),
           width,
           height
         );
 
-        if (!ctx) {
-          return null;
-        }
-        ctx.putImageData(imageData, 0, 0);
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.minFilter = THREE.LinearFilter;
-        return texture;
+        return imageData;
       });
-      framesMap.set(url, canvases);
+      framesMap.set(url, { ctx, canvas, images });
     };
   }
 };
@@ -73,7 +77,7 @@ export const useAnimationTexture = ({
   interval = DEFAULT_INTERVAL,
   enabledLoop = DEFAULT_ENABLED_LOOP,
 }: UseAnimationTextureArgs) => {
-  const [currentCanvasTexture, setCurrentCanvasTexture] =
+  const [animationTexture, setAnimationTexture] =
     useState<THREE.CanvasTexture | null>(null);
   const currentFrame = useRef(0);
 
@@ -89,20 +93,29 @@ export const useAnimationTexture = ({
         if (
           !enabledLoop &&
           currentFrames &&
-          currentFrame.current + 1 === currentFrames.length
+          currentFrame.current + 1 === currentFrames.images.length
         ) {
           return;
         }
 
-        if (currentFrames?.length === 1 && framesMap.size == 1) {
+        if (currentFrames?.images.length === 1 && framesMap.size == 1) {
           return;
         }
 
-        if (currentFrames && currentFrames.length > 0) {
+        if (currentFrames && currentFrames.images.length > 0) {
           currentFrame.current =
-            (currentFrame.current + 1) % currentFrames.length;
-          const canvasTexture = currentFrames[currentFrame.current];
-          setCurrentCanvasTexture(canvasTexture);
+            (currentFrame.current + 1) % currentFrames.images.length;
+          const image = currentFrames.images[currentFrame.current];
+          if (!animationTexture) {
+            currentFrames.ctx.putImageData(image, 0, 0);
+            const texture = new THREE.CanvasTexture(currentFrames.canvas);
+            texture.premultiplyAlpha = true;
+            texture.minFilter = THREE.LinearFilter;
+            setAnimationTexture(texture);
+          } else {
+            currentFrames.ctx.putImageData(image, 0, 0);
+            animationTexture.needsUpdate = true;
+          }
         }
       }, interval);
 
@@ -110,11 +123,11 @@ export const useAnimationTexture = ({
       worker?.terminate();
       intervalForClear && clearInterval(intervalForClear);
     };
-  }, [enabledInterval, enabledLoop, interval, url]);
+  }, [animationTexture, enabledInterval, enabledLoop, interval, url]);
 
   const getFrameses = (url: UseAnimationTextureArgs["url"]) => {
     return framesMap.get(url);
   };
 
-  return { getFrameses, preLoad, currentCanvasTexture };
+  return { getFrameses, preLoad, animationTexture };
 };
