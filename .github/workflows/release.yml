@@ -16,8 +16,6 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
       - uses: pnpm/action-setup@v2
-        with:
-          version: 7.29.0
       - name: install
         run: pnpm i
       - name: build
