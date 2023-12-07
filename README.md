@@ -4,7 +4,7 @@
   <a href="https://github.com/actions/setup-node"><img alt="GitHub Actions status" src="https://github.com/activeguild/animation-texture/workflows/automatic%20release/badge.svg" style="max-width:100%;"></a>
 </p>
 
-# AnimationTexture
+# animation-texture
 
 A library supports image animation using `react-three-fiber`. The target files are `APNG` files. <br/>
 Support is also planned for `GIF` files, etc.
@@ -12,7 +12,7 @@ Support is also planned for `GIF` files, etc.
 ## Install
 
 ```bash
-npm i -D AnimationTexture
+npm i -D animation-texture
 ```
 
 ## Usage
