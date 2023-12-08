@@ -112,7 +112,7 @@ export const useAnimationTexture = ({
 
       setCurrentFrame(nextCurrentFrame);
     }
-  }, [currentFrame, enabledLoop, url]);
+  }, [animationTexture, currentFrame, enabledLoop, url]);
 
   useEffect(() => {
     initializeWorker();

@@ -16,7 +16,7 @@ export function AnimationTexture({ url, position }: Props) {
         THREE.MeshPhongMaterial,
         THREE.Object3DEventMap
       >
-    >();
+    >(null);
 
   useEffect(() => {
     if (meshRef.current && animationTexture) {
@@ -27,8 +27,8 @@ export function AnimationTexture({ url, position }: Props) {
 
   return (
     <mesh ref={meshRef} position={position}>
-      <planeGeometry args={[1, 1, 1]} />
-      <meshPhongMaterial transparent side={THREE.FrontSide} color={"white"} />
+      <planeGeometry args={[1, 1]} />
+      <meshPhongMaterial transparent side={THREE.FrontSide} />
     </mesh>
   );
 }

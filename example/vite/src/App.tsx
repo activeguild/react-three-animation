@@ -10,7 +10,9 @@ import { preLoad } from "animation-texture";
 
 export default function App() {
   const apngUrl = "/elephant.png";
+  const gifUrl = "/laughing.gif";
   preLoad(apngUrl);
+  preLoad(gifUrl);
 
   return (
     <>
@@ -27,6 +29,10 @@ export default function App() {
           <OrbitControls makeDefault maxDistance={20} minDistance={0.5} />
           <ambientLight intensity={2} />
           <Suspense fallback={null}>
+            <AnimationTexture
+              url={gifUrl}
+              position={new THREE.Vector3(0, 2, 0)}
+            />
             <AnimationTexture
               url={apngUrl}
               position={new THREE.Vector3(0, 0, 0)}
