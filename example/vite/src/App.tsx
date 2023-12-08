@@ -15,7 +15,11 @@ export default function App() {
   return (
     <>
       <Suspense fallback={null}>
-        <Canvas camera={{ position: [-5, 2, 10], fov: 60 }} flat={false}>
+        <Canvas
+          style={{ position: "absolute" }}
+          camera={{ position: [-5, 2, 10], fov: 60 }}
+          flat={false}
+        >
           <PerspectiveCameraComponent
             makeDefault
             position={new THREE.Vector3(0, 0, 4)}

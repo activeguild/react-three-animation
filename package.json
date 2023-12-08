@@ -16,7 +16,8 @@
     }
   },
   "scripts": {
-    "build": "vite build && tsc"
+    "build": "vite build && tsc",
+    "local:publish": "npm link"
   },
   "dependencies": {
     "gifuct-js": "^2.1.2",
