@@ -54,5 +54,8 @@
   "bugs": {
     "url": "https://github.com/activeguild/AnimationTexture/issues"
   },
-  "homepage": "https://github.com/activeguild/AnimationTexture#readme"
+  "homepage": "https://github.com/activeguild/AnimationTexture#readme",
+  "engines": {
+    "node": "20.x"
+  }
 }
