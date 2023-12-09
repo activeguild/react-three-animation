@@ -51,20 +51,26 @@ const initializeWorker = () => {
       if (!ctx) {
         return null;
       }
+      const isGif = url.endsWith(".gif");
       const images = frames.map((frame) => {
-        const isGif = url.endsWith(".gif");
-        const width = isGif ? frame.dims.width : img.width;
-        const height = isGif ? frame.dims.height : img.height;
+        const width = isGif ? frames[0].dims.width : img.width;
+        const height = isGif ? frames[0].dims.height : img.height;
 
         canvas.width = width;
         canvas.height = height;
-        const imageData = new ImageData(
-          isGif ? frame.patch : new Uint8ClampedArray(frame),
-          width,
-          height
-        );
 
-        return imageData;
+        if (isGif) {
+          const imageData = ctx.createImageData(width, height);
+          imageData.data.set(frame.patch);
+          return imageData;
+        } else {
+          const imageData = new ImageData(
+            isGif ? frame.patch : new Uint8ClampedArray(frame),
+            width,
+            height
+          );
+          return imageData;
+        }
       });
       framesMap.set(url, { ctx, canvas, images });
     };

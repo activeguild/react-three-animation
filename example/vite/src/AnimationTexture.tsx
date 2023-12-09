@@ -28,7 +28,7 @@ export function AnimationTexture({ url, position }: Props) {
   return (
     <mesh ref={meshRef} position={position}>
       <planeGeometry args={[1, 1]} />
-      <meshPhongMaterial transparent side={THREE.FrontSide} />
+      <meshBasicMaterial transparent side={THREE.FrontSide} />
     </mesh>
   );
 }

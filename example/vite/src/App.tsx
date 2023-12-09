@@ -9,10 +9,14 @@ import { AnimationTexture } from "./AnimationTexture";
 import { preLoad } from "animation-texture";
 
 export default function App() {
-  const apngUrl = "/elephant.png";
-  const gifUrl = "/laughing.gif";
-  preLoad(apngUrl);
-  preLoad(gifUrl);
+  const framePngUrl = "/frame.png";
+  const framesPngUrl = "/frames.png";
+  const frameGifUrl = "/frame.gif";
+  const framesGifUrl = "/frames.gif";
+  preLoad(framePngUrl);
+  preLoad(framesPngUrl);
+  preLoad(frameGifUrl);
+  preLoad(framesGifUrl);
 
   return (
     <>
@@ -30,12 +34,20 @@ export default function App() {
           <ambientLight intensity={2} />
           <Suspense fallback={null}>
             <AnimationTexture
-              url={gifUrl}
-              position={new THREE.Vector3(0, 2, 0)}
+              url={framePngUrl}
+              position={new THREE.Vector3(0, 0, 0)}
             />
             <AnimationTexture
-              url={apngUrl}
-              position={new THREE.Vector3(0, 0, 0)}
+              url={framesPngUrl}
+              position={new THREE.Vector3(1, 0, 0)}
+            />
+            <AnimationTexture
+              url={frameGifUrl}
+              position={new THREE.Vector3(0, 1, 0)}
+            />
+            <AnimationTexture
+              url={framesGifUrl}
+              position={new THREE.Vector3(1, 1, 0)}
             />
           </Suspense>
           <gridHelper
