@@ -43,8 +43,8 @@ export function Model({ url }: Props) {
 
   return (
     <mesh ref={meshRef} position={new THREE.Vector3(0, 0, 0)}>
-      <planeGeometry args={[1, 1, 1]} />
-      <meshPhongMaterial transparent side={THREE.FrontSide} />
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial transparent side={THREE.FrontSide} />
     </mesh>
   );
 }
