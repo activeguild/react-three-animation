@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import framesWorker from "./worker.js?worker&inline";
 import { CanvasTexture, LinearFilter } from "three";
 
@@ -51,6 +51,8 @@ const drawPatch = (
 ) => {
   const dims = frame.dims;
   const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = dims.width;
+  tempCanvas.height = dims.height;
   const tempCtx = tempCanvas.getContext("2d");
   if (!tempCtx) {
     return null;
@@ -76,21 +78,28 @@ const initializeWorker = () => {
       const { url, img, frames } = event.data;
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
+      const isGif = url.endsWith(".gif");
+      canvas.width = isGif ? frames[0].dims.width : img.width;
+      canvas.height = isGif ? frames[0].dims.height : img.height;
+
       if (!ctx) {
         return null;
       }
+
       const images = frames.map((frame) => {
-        const isGif = url.endsWith(".gif");
-        canvas.width = isGif ? frame.dims.width : img.width;
-        canvas.height = isGif ? frame.dims.height : img.height;
+        const width = isGif ? frame.dims.width : img.width;
+        const height = isGif ? frame.dims.height : img.heigh;
+
         const imageData = new ImageData(
           isGif ? frame.patch : new Uint8ClampedArray(frame),
-          isGif ? frame.dims.width : img.width,
-          isGif ? frame.dims.height : img.height
+          width,
+          height
         );
         return imageData;
       });
-      framesMap.set(url, { ctx, canvas, images, frames });
+      if (!framesMap.has(url)) {
+        framesMap.set(url, { ctx, canvas, images, frames });
+      }
     };
   }
 };
@@ -104,10 +113,12 @@ export const useAnimationTexture = ({
   const [animationTexture, setAnimationTexture] =
     useState<THREE.CanvasTexture | null>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
+  const isGif = url.endsWith(".gif");
+  const needsDisposal = useRef(false);
   const frameUpdate = useCallback(() => {
     const currentFrames = getFrameses(url);
-
     if (
+      animationTexture &&
       !enabledLoop &&
       currentFrames &&
       currentFrame + 1 === currentFrames.images.length
@@ -115,41 +126,42 @@ export const useAnimationTexture = ({
       return;
     }
 
-    if (currentFrames?.images.length === 1 && framesMap.size == 1) {
+    if (animationTexture && currentFrames?.images.length === 1) {
       return;
     }
 
     if (currentFrames && currentFrames.images.length > 0) {
-      const tmpCurrentFrame = currentFrame + 1;
-      const nextCurrentFrame = tmpCurrentFrame % currentFrames.images.length;
-      const image = currentFrames.images[nextCurrentFrame];
-      const frame = currentFrames.frames[nextCurrentFrame];
+      const image = currentFrames.images[currentFrame];
+      const frame = currentFrames.frames[currentFrame];
       if (!animationTexture) {
-        if (url.endsWith("gif")) {
-          currentFrames.ctx.putImageData(
-            image,
-            frame.dims.left,
-            frame.dims.top
-          );
-        } else {
-          currentFrames.ctx.putImageData(image, 0, 0);
-        }
+        currentFrames.ctx.putImageData(image, 0, 0);
         const texture = new CanvasTexture(currentFrames.canvas);
         texture.premultiplyAlpha = true;
         texture.minFilter = LinearFilter;
         setAnimationTexture(texture);
       } else {
-        if (url.endsWith(".gif")) {
+        if (isGif) {
+          if (needsDisposal.current) {
+            currentFrames.ctx.clearRect(
+              0,
+              0,
+              currentFrames.frames[0].dims.width,
+              currentFrames.frames[0].dims.height
+            );
+            needsDisposal.current = false;
+          }
+
           drawPatch(currentFrames.ctx, image, frame);
+          needsDisposal.current = frame.disposalType === 2;
         } else {
           animationTexture.image = image;
         }
         animationTexture.needsUpdate = true;
       }
-
+      const nextCurrentFrame = (currentFrame + 1) % currentFrames.images.length;
       setCurrentFrame(nextCurrentFrame);
     }
-  }, [animationTexture, currentFrame, enabledLoop, url]);
+  }, [animationTexture, currentFrame, enabledLoop, isGif, url]);
 
   useEffect(() => {
     initializeWorker();

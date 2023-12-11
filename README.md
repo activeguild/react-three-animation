@@ -6,8 +6,8 @@
 
 # animation-texture
 
-A library supports image animation using `react-three-fiber`. The target files are `APNG` files. <br/>
-Support is also planned for `GIF` files, etc.
+A library supports image animation using `react-three-fiber`. The target files are `APNG` and `GIF` files. <br/>
+If there is only one frame, a still image is displayed.
 
 ## Install
 
@@ -50,8 +50,8 @@ export function Model({ url }: Props) {
 }
 ```
 
-
 #### Pre-load if necessary.
+
 ```ts
 import React from "react";
 import * as THREE from "three";
