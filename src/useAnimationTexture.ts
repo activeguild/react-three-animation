@@ -19,9 +19,11 @@ const framesMap = new Map<
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     images: ImageData[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    frames: any[];
   }
 >();
-let worker: Worker;
+let worker: Worker | null;
 
 const load = (url: UseAnimationTextureArgs["url"]) => {
   initializeWorker();
@@ -33,12 +35,38 @@ const load = (url: UseAnimationTextureArgs["url"]) => {
   fetch(url)
     .then((res) => res.arrayBuffer())
     .then((arrayBuffer) => {
-      worker.postMessage({ url, arrayBuffer });
+      worker?.postMessage({ url, arrayBuffer });
     });
 };
 
 export const preLoad = (url: UseAnimationTextureArgs["url"]) => {
   load(url);
+};
+
+const drawPatch = (
+  ctx: CanvasRenderingContext2D,
+  image: ImageData,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  frame: any
+) => {
+  const dims = frame.dims;
+  const tempCanvas = document.createElement("canvas");
+  const tempCtx = tempCanvas.getContext("2d");
+  if (!tempCtx) {
+    return null;
+  }
+  tempCtx.putImageData(image, 0, 0);
+  ctx.drawImage(
+    tempCanvas,
+    0,
+    0,
+    dims.width,
+    dims.height,
+    dims.left,
+    dims.top,
+    dims.width,
+    dims.height
+  );
 };
 
 const initializeWorker = () => {
@@ -51,28 +79,18 @@ const initializeWorker = () => {
       if (!ctx) {
         return null;
       }
-      const isGif = url.endsWith(".gif");
       const images = frames.map((frame) => {
-        const width = isGif ? frames[0].dims.width : img.width;
-        const height = isGif ? frames[0].dims.height : img.height;
-
-        canvas.width = width;
-        canvas.height = height;
-
-        if (isGif) {
-          const imageData = ctx.createImageData(width, height);
-          imageData.data.set(frame.patch);
-          return imageData;
-        } else {
-          const imageData = new ImageData(
-            isGif ? frame.patch : new Uint8ClampedArray(frame),
-            width,
-            height
-          );
-          return imageData;
-        }
+        const isGif = url.endsWith(".gif");
+        canvas.width = isGif ? frame.dims.width : img.width;
+        canvas.height = isGif ? frame.dims.height : img.height;
+        const imageData = new ImageData(
+          isGif ? frame.patch : new Uint8ClampedArray(frame),
+          isGif ? frame.dims.width : img.width,
+          isGif ? frame.dims.height : img.height
+        );
+        return imageData;
       });
-      framesMap.set(url, { ctx, canvas, images });
+      framesMap.set(url, { ctx, canvas, images, frames });
     };
   }
 };
@@ -105,14 +123,27 @@ export const useAnimationTexture = ({
       const tmpCurrentFrame = currentFrame + 1;
       const nextCurrentFrame = tmpCurrentFrame % currentFrames.images.length;
       const image = currentFrames.images[nextCurrentFrame];
+      const frame = currentFrames.frames[nextCurrentFrame];
       if (!animationTexture) {
-        currentFrames.ctx.putImageData(image, 0, 0);
+        if (url.endsWith("gif")) {
+          currentFrames.ctx.putImageData(
+            image,
+            frame.dims.left,
+            frame.dims.top
+          );
+        } else {
+          currentFrames.ctx.putImageData(image, 0, 0);
+        }
         const texture = new CanvasTexture(currentFrames.canvas);
         texture.premultiplyAlpha = true;
         texture.minFilter = LinearFilter;
         setAnimationTexture(texture);
       } else {
-        animationTexture.image = image;
+        if (url.endsWith(".gif")) {
+          drawPatch(currentFrames.ctx, image, frame);
+        } else {
+          animationTexture.image = image;
+        }
         animationTexture.needsUpdate = true;
       }
 
@@ -125,7 +156,8 @@ export const useAnimationTexture = ({
     load(url);
 
     const intervalForClear =
-      enabledInterval && setInterval(frameUpdate, interval);
+      enabledInterval &&
+      setInterval(() => requestAnimationFrame(frameUpdate), interval);
 
     return () => {
       intervalForClear && clearInterval(intervalForClear);
