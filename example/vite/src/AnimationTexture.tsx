@@ -5,10 +5,13 @@ import { useAnimationTexture } from "animation-texture";
 interface Props {
   url: string;
   position: THREE.Vector3;
+  isPlaying?: boolean;
 }
 
-export function AnimationTexture({ url, position }: Props) {
-  const { animationTexture } = useAnimationTexture({ url });
+export function AnimationTexture({ url, position, isPlaying = true }: Props) {
+  const { animationTexture } = useAnimationTexture({
+    url,
+  });
   const meshRef =
     useRef<
       THREE.Mesh<
@@ -24,6 +27,18 @@ export function AnimationTexture({ url, position }: Props) {
       meshRef.current.material.needsUpdate = true;
     }
   }, [animationTexture]);
+
+  useEffect(() => {
+    if (!animationTexture) {
+      return;
+    }
+
+    if (isPlaying) {
+      animationTexture.animate();
+    } else {
+      animationTexture.pause();
+    }
+  }, [animationTexture, isPlaying]);
 
   return (
     <mesh ref={meshRef} position={position}>

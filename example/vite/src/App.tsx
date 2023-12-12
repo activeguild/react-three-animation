@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -9,6 +9,7 @@ import { AnimationTexture } from "./AnimationTexture";
 import { preLoad } from "animation-texture";
 
 export default function App() {
+  const [isPlaying, setIsPlaying] = useState(false);
   const framePngUrl = "/frame.png";
   const framesPngUrl = "/frames.png";
   const frameGifUrl = "/frame.gif";
@@ -18,11 +19,19 @@ export default function App() {
   preLoad(frameGifUrl);
   preLoad(framesGifUrl);
 
+  const handleAnimate = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+  };
+
   return (
     <>
       <Suspense fallback={null}>
         <Canvas
-          style={{ position: "absolute" }}
+          style={{ position: "absolute", top: 100 }}
           camera={{ position: [-5, 2, 10], fov: 60 }}
           flat={false}
         >
@@ -40,6 +49,7 @@ export default function App() {
             <AnimationTexture
               url={framesPngUrl}
               position={new THREE.Vector3(1, 0, 0)}
+              isPlaying={isPlaying}
             />
             <AnimationTexture
               url={frameGifUrl}
@@ -56,6 +66,8 @@ export default function App() {
           />
         </Canvas>
       </Suspense>
+      <button onClick={handleAnimate}>animate</button>
+      <button onClick={handlePause}>pause</button>
     </>
   );
 }

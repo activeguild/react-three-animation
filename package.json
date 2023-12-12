@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "vite build && tsc",
-    "watch": "vite build --watch",
+    "watch": "tsc && vite build --watch",
     "local:publish": "npm link"
   },
   "dependencies": {

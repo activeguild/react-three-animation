@@ -7,7 +7,8 @@
 # animation-texture
 
 A library supports image animation using `react-three-fiber`. The target files are `APNG` and `GIF` files. <br/>
-If there is only one frame, a still image is displayed.
+If there is only one frame, a still image is displayed.<br/>
+The animate, pause, and reset methods can be called from the texture.
 
 ## Install
 

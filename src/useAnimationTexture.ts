@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import framesWorker from "./worker.js?worker&inline";
-import { CanvasTexture, LinearFilter } from "three";
+import { LinearFilter } from "three";
+import { AnimationTexture } from "./AnimationTexture";
 
 interface UseAnimationTextureArgs {
   url: string;
-  enabledInterval?: boolean;
+  // enabledInterval?: boolean;
   interval?: number;
-  enabledLoop?: boolean;
+  loop?: boolean;
+  autoplay?: boolean;
 }
 
-const DEFAULT_ENABLED_INTERVAL = true;
 const DEFAULT_INTERVAL = 100;
 const DEFAULT_ENABLED_LOOP = true;
+const DEFAULT_AUTOPLAY = true;
 
 const framesMap = new Map<
   string,
@@ -106,20 +108,21 @@ const initializeWorker = () => {
 
 export const useAnimationTexture = ({
   url,
-  enabledInterval = DEFAULT_ENABLED_INTERVAL,
   interval = DEFAULT_INTERVAL,
-  enabledLoop = DEFAULT_ENABLED_LOOP,
+  loop = DEFAULT_ENABLED_LOOP,
+  autoplay = DEFAULT_AUTOPLAY,
 }: UseAnimationTextureArgs) => {
   const [animationTexture, setAnimationTexture] =
-    useState<THREE.CanvasTexture | null>(null);
+    useState<AnimationTexture | null>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
   const isGif = url.endsWith(".gif");
   const needsDisposal = useRef(false);
+  const [playing, setPlaying] = useState(autoplay);
   const frameUpdate = useCallback(() => {
     const currentFrames = getFrameses(url);
     if (
       animationTexture &&
-      !enabledLoop &&
+      !loop &&
       currentFrames &&
       currentFrame + 1 === currentFrames.images.length
     ) {
@@ -135,7 +138,16 @@ export const useAnimationTexture = ({
       const frame = currentFrames.frames[currentFrame];
       if (!animationTexture) {
         currentFrames.ctx.putImageData(image, 0, 0);
-        const texture = new CanvasTexture(currentFrames.canvas);
+        const texture = new AnimationTexture(currentFrames.canvas);
+        texture.animate = () => {
+          setPlaying(true);
+        };
+        texture.pause = () => {
+          setPlaying(false);
+        };
+        texture.reset = () => {
+          setCurrentFrame(0);
+        };
         texture.premultiplyAlpha = true;
         texture.minFilter = LinearFilter;
         setAnimationTexture(texture);
@@ -161,20 +173,20 @@ export const useAnimationTexture = ({
       const nextCurrentFrame = (currentFrame + 1) % currentFrames.images.length;
       setCurrentFrame(nextCurrentFrame);
     }
-  }, [animationTexture, currentFrame, enabledLoop, isGif, url]);
+  }, [animationTexture, currentFrame, loop, isGif, url]);
 
   useEffect(() => {
     initializeWorker();
     load(url);
 
     const intervalForClear =
-      enabledInterval &&
+      playing &&
       setInterval(() => requestAnimationFrame(frameUpdate), interval);
 
     return () => {
       intervalForClear && clearInterval(intervalForClear);
     };
-  }, [enabledInterval, frameUpdate, interval, url]);
+  }, [playing, frameUpdate, interval, url]);
 
   useEffect(() => {
     return () => {
