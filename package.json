@@ -27,24 +27,26 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.17",
     "@types/three": "^0.159.0",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
-    "eslint": "^8.53.0",
+    "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.4",
+    "eslint-plugin-react-refresh": "^0.4.5",
     "three": "^0.159.0",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.6"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8"
   },
   "keywords": [
     "react",
     "react-three-fiber",
     "gif",
     "apng",
+    "png",
+    "canvas",
     "animation",
     "texture",
     "three"
@@ -52,9 +54,9 @@
   "author": "j1ngzoue",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/activeguild/AnimationTexture/issues"
+    "url": "https://github.com/activeguild/animation-texture/issues"
   },
-  "homepage": "https://github.com/activeguild/AnimationTexture#readme",
+  "homepage": "https://github.com/activeguild/animation-texture#readme",
   "engines": {
     "node": "20.x"
   }
