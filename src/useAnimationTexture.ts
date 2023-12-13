@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import framesWorker from "./worker.js?worker&inline";
-import { LinearFilter } from "three";
 import { AnimationTexture } from "./AnimationTexture";
 
 interface UseAnimationTextureArgs {
@@ -189,6 +188,7 @@ export const useAnimationTexture = ({
   useEffect(() => {
     return () => {
       worker?.terminate();
+      framesMap.clear();
     };
   }, []);
 
