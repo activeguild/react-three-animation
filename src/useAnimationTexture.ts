@@ -148,8 +148,6 @@ export const useAnimationTexture = ({
         texture.reset = () => {
           setCurrentFrame(0);
         };
-        texture.premultiplyAlpha = true;
-        texture.minFilter = LinearFilter;
         setAnimationTexture(texture);
       } else {
         if (isGif) {
