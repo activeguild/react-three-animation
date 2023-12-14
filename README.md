@@ -13,7 +13,7 @@ The animate, pause, and reset methods can be called from the texture.
 ## Install
 
 ```bash
-npm i -D animation-texture
+npm i animation-texture
 ```
 
 ## Demo
