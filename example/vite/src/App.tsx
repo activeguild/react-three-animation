@@ -31,7 +31,7 @@ export default function App() {
     <>
       <Suspense fallback={null}>
         <Canvas
-          style={{ position: "absolute", top: 100 }}
+          style={{ position: "absolute", top: 30 }}
           camera={{ position: [-5, 2, 10], fov: 60 }}
           flat={false}
         >
@@ -44,20 +44,20 @@ export default function App() {
           <Suspense fallback={null}>
             <AnimationTexture
               url={framePngUrl}
-              position={new THREE.Vector3(0, 0, 0)}
+              position={new THREE.Vector3(-1, 1, 0)}
             />
             <AnimationTexture
               url={framesPngUrl}
-              position={new THREE.Vector3(1, 0, 0)}
+              position={new THREE.Vector3(0, 1, 0)}
               isPlaying={isPlaying}
             />
             <AnimationTexture
               url={frameGifUrl}
-              position={new THREE.Vector3(0, 1, 0)}
+              position={new THREE.Vector3(-1, 0, 0)}
             />
             <AnimationTexture
               url={framesGifUrl}
-              position={new THREE.Vector3(1, 1, 0)}
+              position={new THREE.Vector3(0, 0, 0)}
             />
           </Suspense>
           <gridHelper

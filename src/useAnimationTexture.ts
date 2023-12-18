@@ -4,14 +4,13 @@ import { AnimationTexture } from "./AnimationTexture";
 
 interface UseAnimationTextureArgs {
   url: string;
-  // enabledInterval?: boolean;
   interval?: number;
   loop?: boolean;
   autoplay?: boolean;
 }
 
 const DEFAULT_INTERVAL = 100;
-const DEFAULT_ENABLED_LOOP = true;
+const DEFAULT_LOOP = true;
 const DEFAULT_AUTOPLAY = true;
 
 const framesMap = new Map<
@@ -42,34 +41,6 @@ const load = (url: UseAnimationTextureArgs["url"]) => {
 
 export const preLoad = (url: UseAnimationTextureArgs["url"]) => {
   load(url);
-};
-
-const drawPatch = (
-  ctx: CanvasRenderingContext2D,
-  image: ImageData,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  frame: any
-) => {
-  const dims = frame.dims;
-  const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = dims.width;
-  tempCanvas.height = dims.height;
-  const tempCtx = tempCanvas.getContext("2d");
-  if (!tempCtx) {
-    return null;
-  }
-  tempCtx.putImageData(image, 0, 0);
-  ctx.drawImage(
-    tempCanvas,
-    0,
-    0,
-    dims.width,
-    dims.height,
-    dims.left,
-    dims.top,
-    dims.width,
-    dims.height
-  );
 };
 
 const initializeWorker = () => {
@@ -108,7 +79,7 @@ const initializeWorker = () => {
 export const useAnimationTexture = ({
   url,
   interval = DEFAULT_INTERVAL,
-  loop = DEFAULT_ENABLED_LOOP,
+  loop = DEFAULT_LOOP,
   autoplay = DEFAULT_AUTOPLAY,
 }: UseAnimationTextureArgs) => {
   const [animationTexture, setAnimationTexture] =
@@ -117,6 +88,42 @@ export const useAnimationTexture = ({
   const isGif = url.endsWith(".gif");
   const needsDisposal = useRef(false);
   const [playing, setPlaying] = useState(autoplay);
+  const tempCanvas = useRef<HTMLCanvasElement | null>(null);
+  const tempCtx = useRef<CanvasRenderingContext2D | null>(null);
+
+  const drawPatch = (
+    ctx: CanvasRenderingContext2D,
+    image: ImageData,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    frame: any
+  ) => {
+    const dims = frame.dims;
+    if (!tempCanvas.current) {
+      tempCanvas.current = document.createElement("canvas");
+    }
+    tempCanvas.current.width = dims.width;
+    tempCanvas.current.height = dims.height;
+    if (tempCtx.current) {
+      tempCtx.current = tempCanvas.current.getContext("2d");
+    }
+
+    if (!tempCtx.current) {
+      return null;
+    }
+    tempCtx.current.putImageData(image, 0, 0);
+    ctx.drawImage(
+      tempCanvas.current,
+      0,
+      0,
+      dims.width,
+      dims.height,
+      dims.left,
+      dims.top,
+      dims.width,
+      dims.height
+    );
+  };
+
   const frameUpdate = useCallback(() => {
     const currentFrames = getFrameses(url);
     if (
