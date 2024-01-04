@@ -1,5 +1,5 @@
 {
-  "name": "animation-texture",
+  "name": "react-three-animation",
   "version": "0.1.20",
   "type": "module",
   "main": "./dist/index.umd.cjs",
@@ -54,9 +54,9 @@
   "author": "j1ngzoue",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/activeguild/animation-texture/issues"
+    "url": "https://github.com/activeguild/react-three-animation/issues"
   },
-  "homepage": "https://github.com/activeguild/animation-texture#readme",
+  "homepage": "https://github.com/activeguild/react-three-animation#readme",
   "engines": {
     "node": "20.x"
   }

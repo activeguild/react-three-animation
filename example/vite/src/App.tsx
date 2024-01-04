@@ -6,7 +6,7 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 import { AnimationTexture } from "./AnimationTexture";
-import { preLoad } from "animation-texture";
+import { preLoad } from "react-three-animation";
 
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);

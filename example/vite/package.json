@@ -14,7 +14,7 @@
   "dependencies": {
     "@react-three/drei": "^9.92.1",
     "@react-three/fiber": "^8.15.12",
-    "animation-texture": "^0.1.19",
+    "react-three-animation": "^0.1.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.159.0"

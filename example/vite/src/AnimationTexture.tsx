@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-import { useAnimationTexture } from "animation-texture";
+import { useAnimationTexture } from "react-three-animation";
 
 interface Props {
   url: string;

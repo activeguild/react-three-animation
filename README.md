@@ -1,10 +1,10 @@
-<h1 align="center">animation-texture ⚡ Welcome 😀</h1>
+<h1 align="center">react-three-animation ⚡ Welcome 😀</h1>
 
 <p align="left">
-  <a href="https://github.com/actions/setup-node"><img alt="GitHub Actions status" src="https://github.com/activeguild/animation-texture/workflows/automatic%20release/badge.svg" style="max-width:100%;"></a>
+  <a href="https://github.com/actions/setup-node"><img alt="GitHub Actions status" src="https://github.com/activeguild/react-three-animation/workflows/automatic%20release/badge.svg" style="max-width:100%;"></a>
 </p>
 
-# animation-texture
+# react-three-animation
 
 A library supports image animation using `react-three-fiber`. The target files are `APNG` and `GIF` files. <br/>
 If there is only one frame, a still image is displayed.<br/>
@@ -13,19 +13,19 @@ The animate, pause, and reset methods can be called from the texture.
 ## Install
 
 ```bash
-npm i animation-texture
+npm i react-three-animation
 ```
 
 ## Demo
 
-<img src="https://github.com/activeguild/animation-texture/assets/39351982/00acf5d7-2077-4618-aef3-8a0be4b609d2" height="160" />
+<img src="https://github.com/activeguild/react-three-animation/assets/39351982/00acf5d7-2077-4618-aef3-8a0be4b609d2" height="160" />
 
 ## Usage
 
 ```ts
 import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
-import { useAnimationTexture } from "animation-texture";
+import { useAnimationTexture } from "react-three-animation";
 
 interface Props {
   url: string;
@@ -56,7 +56,7 @@ export function Model({ url }: Props) {
 ```ts
 import React from "react";
 import * as THREE from "three";
-import { preLoad } from "animation-texture";
+import { preLoad } from "react-three-animation";
 
 export default function App() {
   preLoad('/sample.png');
@@ -67,8 +67,8 @@ export default function App() {
 
 ## Principles of conduct
 
-Please see [the principles of conduct](https://github.com/activeguild/animation-texture/blob/main/.github/CONTRIBUTING.md) when building a site.
+Please see [the principles of conduct](https://github.com/activeguild/react-three-animation/blob/main/.github/CONTRIBUTING.md) when building a site.
 
 ## License
 
-This library is licensed under the [MIT license](https://github.com/activeguild/animation-texture/blob/main/LICENSE).
+This library is licensed under the [MIT license](https://github.com/activeguild/react-three-animation/blob/main/LICENSE).
